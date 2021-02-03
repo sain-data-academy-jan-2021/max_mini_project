@@ -1,0 +1,10 @@
+Index,Drink,Hot_Cold,Price,Status
+1,Tea,Hot,£1.25,Available
+2,Coffee,Hot,£1.50,Available
+3,Decaf Coffe,Hot,£1.50,Out Of Stock
+4,Hot Chocolate,Hot,£1.80,Available
+5,Fanta,Cold,£1.00,Available
+6,Sprite,Cold,£1.00,Available
+7,Coca Cola,£1.00,Available
+8,Coke Zero,£1.25,Out Of Stock
+9,Water,£0.50,Available

@@ -4,14 +4,23 @@ os.system("clear")
 import utils.functions as functions
 import login
 import csv
+from utils.functions import header
 
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
 
+
+header()
+
 while menu_select not in acceptable_values:
     menu_select = functions.main_menu()
+
+
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
+
+header()
+
 while menu_select != "0":
     if menu_select == 1:
 
@@ -24,7 +33,7 @@ while menu_select != "0":
         fieldnames = [
             "Index",
             "Drink",
-            "Hot_Cold",
+            "Type",
             "Price",
             "Status",
         ]
@@ -71,10 +80,10 @@ while menu_select != "0":
             "Index",
             "Name",
             "Address",
-            "Phone_Number",
+            "Phone",
             "Courier",
-            "Product(s)",
-            "Current_Status",
+            "Products",
+            "Status",
         ]
 
         functions.write_to_csv("data/order_info.csv", orders, fieldnames)

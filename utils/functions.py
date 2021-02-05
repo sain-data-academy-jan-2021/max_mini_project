@@ -1,7 +1,16 @@
 import csv
+from prettytable import PrettyTable
+import os
 
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
+
+
+def header():
+    os.system("clear")
+    print("+---------------------------------+")
+    print("|         Mad Max's Cafe          +")
+    print("+---------------------------------+")
 
 
 def main_menu():
@@ -9,7 +18,7 @@ def main_menu():
     try:
         selection = int(
             input(
-                "1.) Product Menu    2.) Courier List    3.) Order Screen    0.) Exit. "
+                """1.) Product Menu    \n2.) Courier List    \n3.) Order Screen    \n0.) Exit. """
             )
         )
         if selection not in acceptable_values:
@@ -22,34 +31,53 @@ def main_menu():
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
 
+
+def print_table_drinks(item_list):
+    x = PrettyTable()
+    x.field_names = ["Index", "Drink", "Type", "Price", "Status"]
+    for items in item_list:
+        x.add_row(
+            (
+                items["Index"],
+                items["Drink"],
+                items["Type"],
+                items["Price"],
+                items["Status"],
+            )
+        )
+    print(x)
+
+
 def drinks_menu(item, list):
-    for drinks in list:
-        print(drinks)
+    print_table_drinks(list)
+
     drinks_option = input(
-        f"1.) Print {item}  2.) Add A {item}    3.) Update A {item}  4.) Delete A {item}    0.) Exit "
+        f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}    \n0.) Exit "
     )
+    header()
     while drinks_option != "0":
         if drinks_option == "1":
-            for drinks in list:
-                print(drinks)
+            header()
+            print_table_drinks(list)
         elif drinks_option == "2":
+            header()
             idx = input("Number in list: ")
             prod = input("Name of drink: ")
-            hoc = input("Hot or Cold drink: ")
+            hca = input("Hot, Cold or Alcoholic: ")
             price = input("Price of drink: ")
             avail = input("Availble or Out Of Stock: ")
             drinks_dict = {
                 "Index": idx,
                 "Drink": prod,
-                "Hot_Cold": hoc,
+                "Type": hca,
                 "Price": price,
                 "Status": avail,
             }
 
             list.append(drinks_dict)
-            for drinks in list:
-                print(drinks)
+            print_table_drinks(list)
         elif drinks_option == "3":
+            header()
             update_prod = input(
                 "What is the Name of the Product you would like to update?: "
             )
@@ -58,14 +86,14 @@ def drinks_menu(item, list):
             for drinks in list:
                 if drinks["Drink"] == update_prod:
                     drinks["Status"] = new_status
-                    for drinks in list:
-                        print(drinks)
+                    print_table_drinks(list)
                     current_drinks = True
             if current_drinks == False:
                 print("Sorry! Not a current drink.")
 
                 return drinks
         elif drinks_option == "4":
+            header()
             del_name = input(
                 "What is the Name of the drink you would like to delete?: "
             )
@@ -73,33 +101,49 @@ def drinks_menu(item, list):
             for drinks in list:
                 if drinks["Drink"] == del_name:
                     list.remove(drinks)
-                    for drinks in list:
-                        print(drinks)
+                    print_table_drinks(list)
                     current_drinks = True
             if current_drinks == False:
                 print("Sorry! Not a current courier.")
 
         drinks_option = input(
-            f"1.) Print {item}  2.) Add A {item}    3.) Update A {item}  4.) Delete A {item}   0.) Exit "
+            f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}   \n0.) Exit "
         )
 
 
+# ------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------------------------------------
+
+def print_table_courier(item_list):
+    x = PrettyTable()
+    x.field_names = ["Index", "Name", "Age", "Vehicle", "Status"]
+    for items in item_list:
+        x.add_row(
+            (
+                items["Index"],
+                items["Name"],
+                items["Age"],
+                items["Vehicle"],
+                items["Status"],
+            )
+        )
+    print(x)
 
 
 def courier_menu(item, list):
-    for courier in list:
-        print(courier)
+    print_table_courier(list)
+
     courier_option = input(
-        f"1.) Print {item}  2.) Add A {item}    3.) Update A {item}  4.) Delete A {item}    0.) Exit "
+        f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}    \n0.) Exit "
     )
+    header()
     while courier_option != "0":
         if courier_option == "1":
-            for courier in list:
-                print(courier)
+            header()
+            print_table_courier(list)
         elif courier_option == "2":
+            header()
             idx = input("Number in list: ")
             name = input("First Name: ")
             age = input("Age: ")
@@ -115,9 +159,9 @@ def courier_menu(item, list):
             }
 
             list.append(courier_dict)
-            for courier in list:
-                print(courier)
+            print_table_courier(list)
         elif courier_option == "3":
+            header()
             update_name = input(
                 "What is the Name of the Courier you would like to update?: "
             )
@@ -126,14 +170,14 @@ def courier_menu(item, list):
             for courier in list:
                 if courier["Name"] == update_name:
                     courier["Status"] = new_status
-                    for courier in list:
-                        print(courier)
+                    print_table_courier(list)
                     current_courier = True
             if current_courier == False:
                 print("Sorry! Not a current courier.")
 
                 return courier
         elif courier_option == "4":
+            header()
             del_name = input(
                 "What is the First Name of the courier you would like to delete?: "
             )
@@ -141,33 +185,52 @@ def courier_menu(item, list):
             for courier in list:
                 if courier["Name"] == del_name:
                     list.remove(courier)
-                    for courier in list:
-                        print(courier)
+                    print_table_courier(list)
                     current_courier = True
             if current_courier == False:
                 print("Sorry! Not a current courier.")
 
         courier_option = input(
-            f"1.) Print {item}  2.) Add A {item}    3.) Update A {item}  4.) Delete A {item}   0.) Exit "
+            f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}   \n0.) Exit "
         )
-    
-    
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
+
+
+def print_table_order(item_list):
+    x = PrettyTable()
+    x.field_names = ["Index","Name","Address","Phone","Courier","Prodcut(s)","Status"]
+    for items in item_list:
+        x.add_row(
+            (
+                items["Index"],
+                items["Name"],
+                items["Address"],
+                items["Phone"],
+                items["Courier"],
+                items["Products"],
+                items["Status"],
+            )
+        )
+    print(x)
 
 
 def order_menu(item, list):
-    for orders in list:
-        print(orders)
+    print_table_order(list)
+
     order_option = input(
-        f"1.) Print {item}  2.) Add A {item}    3.) Update A {item}  4.) Delete A {item}    0.) Exit "
+        f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}    \n0.) Exit "
     )
+    header()
     while order_option != "0":
         if order_option == "1":
-            for order in list:
-                print(order)
+            header()
+            print_table_order(list)
         elif order_option == "2":
+            header()
+            idx = input("Index: ")
             name = input("Name: ")
             add = input("Address: ")
             p_num = input("Phone Number: ")
@@ -179,16 +242,16 @@ def order_menu(item, list):
                 "Index": idx,
                 "Name": name,
                 "Address": add,
-                "Phone_Number": p_num,
+                "Phone": p_num,
                 "Courier": cour,
-                "Product(s)": prod,
-                "Current_Status": stat,
+                "Products": prod,
+                "Status": stat,
             }
 
             list.append(order_dict)
-            for order in list:
-                print(order)
+            print_table_order(list)
         elif order_option == "3":
+            header()
             update_ord = input(
                 "What is the Index of the order you would like to update?: "
             )
@@ -197,14 +260,14 @@ def order_menu(item, list):
             for order in list:
                 if order["Index"] == update_ord:
                     order["Current_Status"] = new_status
-                    for order in list:
-                        print(order)
+                    print_table_order(list)
                     current_order = True
             if current_order == False:
                 print("Sorry! Not a current order.")
 
                 return order
         elif order_option == "4":
+            header()
             del_ord = input(
                 "What is the Index of the order you would like to delete?: "
             )
@@ -212,26 +275,27 @@ def order_menu(item, list):
             for order in list:
                 if order["Index"] == del_ord:
                     list.remove(order)
-                    for order in list:
-                        print(order)
+                    print_table_order(list)
                     current_order = True
             if current_order == False:
                 print("Sorry! Not a current order.")
 
         order_option = input(
-            f"1.) Print {item}  2.) Add A {item}    3.) Update A {item}  4.) Delete A {item}   0.) Exit "
+            f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}   \n0.) Exit "
         )
 
 
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
 
+
 def read_from_csv(filename, list):
-    
+
     with open(filename, "r") as file:
-            csv_file = csv.DictReader(file)
-            for row in csv_file:
-                list.append(row)
+        csv_file = csv.DictReader(file)
+        for row in csv_file:
+            list.append(row)
+
 
 def write_to_csv(filename, list, fieldnames):
 
@@ -246,6 +310,7 @@ def write_to_csv(filename, list, fieldnames):
 
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
+
 
 def rate_sys():
     rate = input(

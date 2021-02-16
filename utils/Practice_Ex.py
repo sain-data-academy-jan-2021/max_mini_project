@@ -1,134 +1,203 @@
-import os
-
-os.system("clear")
-import utils.functions as functions
-import login
 import csv
-
-hot_drinks = []
-cold_drinks = []
-alco_drinks = []
-
-with open("data/hot_drinks.txt", "r") as file:
-    for product in file:
-        hot_drinks.append(product.strip())
-
-with open("data/cold_drinks.txt", "r") as file:
-    for product in file:
-        cold_drinks.append(product.strip())
-
-with open("data/alco_drinks.txt", "r") as file:
-    for product in file:
-        alco_drinks.append(product.strip())
+from prettytable import PrettyTable
+import os
+from utils.DB_funcs import import_prod_db
+from utils.DB_funcs import import_cour_db
 
 menu_select = ""
-acceptable_values = [0, 1, 2, 3, 4]
+acceptable_values = [0, 1, 2, 3]
 
-while menu_select not in acceptable_values:
-    menu_select = functions.main_menu()
 
-# ------------------------------------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------------------------------------
-while menu_select != "0":
-    if menu_select == 1:
+def header():
+    os.system("clear")
+    print("+---------------------------------+")
+    print("|         Mad Max's Cafe          +")
+    print("+---------------------------------+")
 
-        num_select = input(
-            "1.) Hot Drinks Menu     2.) Cold Drinks Menu    3.) Alcoholic Drinks Menu   0.) Exit. "
-        )
 
-        while num_select != "0":
-            if num_select == "1":
-                functions.item_menu("Hot Drink", hot_drinks)
+def main_menu():
 
-            elif num_select == "2":
-                functions.item_menu("Cold Drink", cold_drinks)
-
-            elif num_select == "3":
-                functions.item_menu("Alcoholic Drink", alco_drinks)
-
-            else:
-                print("Please enter a vaild number.")
-
-            num_select = input(
-                "1.) Hot Drinks Menu     2.) Cold Drinks Menu    3.) Alcoholic Drinks Menu   0.) Exit. "
+    try:
+        selection = int(
+            input(
+                """1.) Product Menu    \n2.) Courier List    \n3.) Order Screen    \n0.) Exit. """
             )
+        )
+        if selection not in acceptable_values:
+            print("Invalid number. Please try again. ")
+        return selection
+    except ValueError as err:
+        print(err)
 
-        with open("data/hot_drinks.txt", "w") as file:
-            for drink in hot_drinks:
-                file.write(drink + "\n")
-        with open("data/cold_drinks.txt", "w") as file:
-            for drink in cold_drinks:
-                file.write(drink + "\n")
-        with open("data/alco_drinks.txt", "w") as file:
-            for drink in alco_drinks:
-                file.write(drink + "\n")
 
-        print("Thankyou. Here is our full menu list.")
-        print(hot_drinks)
-        print(cold_drinks)
-        print(alco_drinks)
+# ------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------
 
-        menu_select = functions.main_menu()
 
-    # ------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------
+def print_table_drinks(connection):
+    data_list = import_prod_db(connection)
+    x = PrettyTable()
+    x.field_names = ["Id", "Drink", "Type", "Price", "Status"]
+    for items in data_list:
+        x.add_row(
+            (
+                items[0],
+                items[1],
+                items[2],
+                items[3],
+                items[4],
+            )
+        )
+    print(x)
 
-    elif menu_select == 2:
 
-        couriers = []
+def drinks_menu(item, list, connection):
+    print_table_drinks(connection)
 
-        with open("data/courier_list.csv", "r") as file:
-            csv_file = csv.DictReader(file)
-            for row in csv_file:
-                couriers.append(row)
+    drinks_option = input(
+        f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}    \n0.) Exit "
+    )
+    header()
+    while drinks_option != "0":
+        if drinks_option == "1":
+            header()
+            print_table_drinks(connection)
+        elif drinks_option == "2":
+            header()
+            name = input("Prodcut Name: ")
+            ptype = input("Product Type: ")
+            price = float(input("Product Price: "))
+            status = input("Product Status: ")
+            cursor = connection.cursor()
+            cursor.execute(f'insert into products (drink, type, price, status) VALUES ("{name}", "{ptype}", {price}, "{status}")')
+            cursor.close()
+            connection.commit()
+            print_table_drinks(connection)
+        elif drinks_option == "3":
+            header()
+            cursor = connection.cursor()
+            valid_drink = False
+            
+            while not valid_drink:
+                update_prod = input("Name of product you would like to update?: ")
+                new_price = float(input("New Price: "))
+                cursor.execute(f'SELECT * from products WHERE drink = "{update_prod}"')
+                rows = cursor.fetchall()
+                if len(rows) != 0:
+                    valid_drink = True
+                    print("Done!")
+                else:
+                    print("Invalid Selection. Try Again.")
 
-        functions.courier_menu("Courier ", couriers)
+            cursor.execute(f'UPDATE products price SET price = "{new_price}" WHERE drink = "{update_prod}"')
+            cursor.close()
+            connection.commit()
+            print_table_drinks(connection)
+        elif drinks_option == "4":
+            header()
+            cursor = connection.cursor()
+            valid_drink = False
 
-        with open("data/courier_list.csv", "w") as file:
-            fieldnames = ["Name", "Age", "Vehicle", "Status"]
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            while not valid_drink:
+                del_prod = input("Name of product you would like to delete: ")
+                cursor.execute(f'SELECT * from products WHERE drink = "{del_prod}"')
+                rows = cursor.fetchall()
+                if len(rows) != 0:
+                    valid_drink = True
+                    print("Done!")
+                else:
+                    print("Invalid Selection. Try Again.")
 
-            writer.writeheader()
-            for row in couriers:
-                writer.writerow(row)
+            cursor.execute(f'DELETE FROM products WHERE drink = "{del_prod}"')
+            cursor.close()
+            connection.commit()
+            print_table_drinks(connection)
 
-        menu_select = functions.main_menu()
+        drinks_option = input(
+            f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}   \n0.) Exit ")
 
-    # ------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------
 
-    elif menu_select == 3:
 
-        orders = []
 
-        with open("data/order_info.csv", "r") as file:
-            csv_file = csv.DictReader(file)
-            for row in csv_file:
-                orders.append(row)
+def print_table_couriers(connection):
+    data_list = import_cour_db(connection)
+    x = PrettyTable()
+    x.field_names = ["Id", "Name", "Age", "Vehicle", "Status"]
+    for items in data_list:
+        x.add_row(
+            (
+                items[0],
+                items[1],
+                items[2],
+                items[3],
+                items[4],
+            )
+        )
+    print(x)
 
-        functions.order_menu("Order", orders)
 
-        with open("data/order_info.csv", "w") as file:
-            fieldnames = [
-                "First_Name",
-                "Second_Name",
-                "Address",
-                "Phone_Number",
-                "Courier",
-                "Status",
-            ]
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
+def courier_menu(item, list, connection):
+    print_table_couriers(connection)
 
-            writer.writeheader()
-            for row in orders:
-                writer.writerow(row)
+    courier_option = input(
+        f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}    \n0.) Exit "
+    )
+    header()
+    while courier_option != "0":
+        if courier_option == "1":
+            header()
+            print_table_couriers(connection)
+        elif courier_option == "2":
+            header()
+            name = input("Courier Name: ")
+            age = input("Courier Age: ")
+            vehic = float(input("Vehicle: "))
+            status = input("Courier Status: ")
+            cursor = connection.cursor()
+            cursor.execute(f'INSERT INTO couriers (name, age, vehicle, status) VALUES ("{name}", "{age}", {vehic}, "{status}")')
+            cursor.close()
+            connection.commit()
+            print_table_couriers(connection)
+        elif courier_option == "3":
+            header()
+            cursor = connection.cursor()
+            valid_courier = False
+            
+            while not valid_courier:
+                update_cour = input("Name of courier you would like to update?: ")
+                new_stat = input("New Status: "))
+                cursor.execute(f'SELECT * from couriers WHERE name = "{update_cour}"')
+                rows = cursor.fetchall()
+                if len(rows) != 0:
+                    valid_courier = True
+                    print("Done!")
+                else:
+                    print("Invalid Selection. Try Again.")
 
-        menu_select = functions.main_menu()
-    # ------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------
+            cursor.execute(f'UPDATE couriers status SET status = "{new_stat}" WHERE name = "{update_cour}"')
+            cursor.close()
+            connection.commit()
+            print_table_couriers(connection)
+        elif courier_option == "4":
+            header()
+            cursor = connection.cursor()
+            valid_courier = False
 
-    elif menu_select == 0:
-        print("Thankyou!")
-        break
+            while not valid_courier:
+                del_cour = input("Name of courier you would like to delete: ")
+                cursor.execute(f'SELECT * from products WHERE name = "{del_cour}"')
+                rows = cursor.fetchall()
+                if len(rows) != 0:
+                    valid_courier = True
+                    print("Done!")
+                else:
+                    print("Invalid Selection. Try Again.")
 
-functions.rate_sys()
+            cursor.execute(f'DELETE FROM couriers WHERE name = "{del_cour}"')
+            cursor.close()
+            connection.commit()
+            print_table_couriers(connection)
+
+        courier_option = input(
+            f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}   \n0.) Exit ")
+

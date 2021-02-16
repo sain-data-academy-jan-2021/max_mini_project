@@ -1,11 +1,12 @@
-from utils import main_functions
+from utils import *
 from unittest.mock import Mock, patch
+
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
 
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
-#                                            HAPPY PATH.          
+#                                            HAPPY PATH.
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
 
@@ -65,9 +66,29 @@ def test_write_to_csv():
 
 test_write_to_csv()
 
+# -----------------------------------------------------------------------------------------------------------
+
+@patch("builtins.print")
+@patch("builtins.input")
+def test_mock_main_menu(mock_input, mock_print):
+
+    mock_input.return_value = "4"
+    main_menu()
+    mock_print.assert_called_with("Invalid number. Please try again. ")
+    print("Works.")
+
+
+test_mock_main_menu()
+
+# -----------------------------------------------------------------------------------------------------------
+
+@patch("builtins.print")
+@patch("buitlins.input")
+def test_mock
+
 # #------------------------------------------------------------------------------------------------------------
 # #------------------------------------------------------------------------------------------------------------
-# #                                          UNHAPPY PATH.          
+# #                                          UNHAPPY PATH.
 # #------------------------------------------------------------------------------------------------------------
 # #------------------------------------------------------------------------------------------------------------
 
@@ -84,12 +105,13 @@ def test_main_menu():
 
 test_main_menu()
 
-#------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------
+
 
 def test_read_from_csv():
 
     # Assemble
-    filename = "test/test_people_list.csv"    # Wrong file.
+    filename = "test/test_people_list.csv"  # Wrong file.
     my_list = []
 
     # Act
@@ -106,6 +128,7 @@ test_read_from_csv()
 
 # ------------------------------------------------------------------------------------------------------------
 
+
 def test_write_to_csv():
 
     # Assemble
@@ -121,17 +144,12 @@ def test_write_to_csv():
     read_from_csv(filename, b_list)
 
     assert len(b_list) == 2
-    assert b_list[0]["Name"] == "Marcus"    # Wrong Name Input
+    assert b_list[0]["Name"] == "Marcus"  # Wrong Name Input
     assert b_list[1]["Age"] == "30"
     print("Works 3.")
 
 
 test_write_to_csv()
-
-
-
-
-
 
 
 def main_menu():
@@ -146,18 +164,4 @@ def main_menu():
             print("Invalid number. Please try again. ")
         return selection
     except ValueError as err:
-         print(err)
-
-
-
-
-@patch("builtins.print")
-@patch("builtins.input")
-def test_mock_main_menu(mock_input, mock_print):
-
-    mock_input.return_value = "4"
-    main_menu()
-    mock_print.assert_called_with("Invalid number. Please try again. ")
-    print("Works.")
-
-test_mock_main_menu()
+        print(err)

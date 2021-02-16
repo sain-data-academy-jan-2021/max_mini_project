@@ -94,3 +94,22 @@ def item_menu(item, list):
         choose_option = input(
             f"1.) Add A {item}  2.) Remove A {item}    3.) Update A {item}    0.) Exit "
         )
+
+
+def read_from_csv(filename, list):
+
+    with open(filename, "r") as file:
+        csv_file = csv.DictReader(file)
+        for row in csv_file:
+            list.append(row)
+
+
+def write_to_csv(filename, list, fieldnames):
+
+    with open(filename, "w") as file:
+
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+
+        writer.writeheader()
+        for row in list:
+            writer.writerow(row)

@@ -4,6 +4,8 @@ import os
 from utils.DB_funcs import *
 import pymysql
 from dotenv import load_dotenv
+from utils.drinks_funcs import *
+from utils.couriers_funcs import *
 
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
@@ -65,44 +67,22 @@ def drinks_menu(item, list, connection):
             print_table_drinks(connection)
         elif drinks_option == "2":
             header()
-            name = input("Prodcut Name: ")
-            ptype = input("Product Type: ")
-            price = float(input("Product Price: "))
-            status = input("Product Status: ")
             cursor = connection.cursor()
-            cursor.execute(
-                f'insert into products (drink, type, price, status) VALUES ("{name}", "{ptype}", {price}, "{status}")'
-            )
+            drinks_add(connection)
             cursor.close()
             connection.commit()
             print_table_drinks(connection)
         elif drinks_option == "3":
             header()
             cursor = connection.cursor()
-            valid_drink = False
-
-            while not valid_drink:
-                update_prod = input("Name of product you would like to update?: ")
-                new_price = float(input("New Price: "))
-                cursor.execute(f'SELECT * from products WHERE drink = "{update_prod}"')
-                valid_drink = check_name_in_db(cursor)
-            cursor.execute(
-                f'UPDATE products price SET price = "{new_price}" WHERE drink = "{update_prod}"'
-            )
+            drinks_update(connection)
             cursor.close()
             connection.commit()
             print_table_drinks(connection)
         elif drinks_option == "4":
             header()
             cursor = connection.cursor()
-            valid_drink = False
-
-            while not valid_drink:
-                del_prod = input("Name of product you would like to delete: ")
-                cursor.execute(f'SELECT * from products WHERE drink = "{del_prod}"')
-                valid_drink = check_name_in_db(cursor)
-
-            cursor.execute(f'DELETE FROM products WHERE drink = "{del_prod}"')
+            drinks_delete(connection)
             cursor.close()
             connection.commit()
             print_table_drinks(connection)

@@ -1,4 +1,4 @@
-Index,Drink,Type,Price,Status
+Id,Drink,Type,Price,Status
 1,Tea,Hot,£1.25,Available
 2,Coffee,Hot,£1.50,Available
 3,Decaf Coffe,Hot,£1.50,Out Of Stock

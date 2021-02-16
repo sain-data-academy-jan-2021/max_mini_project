@@ -1,10 +1,9 @@
 import os
 
 os.system("clear")
-import utils.functions as functions
 import login
 from utils.main_functions import *
-from utils.DB_funcs import *
+from utils.DB_funcs import * 
 
 connection = db_connect()
 
@@ -15,7 +14,7 @@ acceptable_values = [0, 1, 2, 3]
 header()
 
 while menu_select not in acceptable_values:
-    menu_select = functions.main_menu()
+    menu_select = main_menu()
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -28,9 +27,9 @@ while menu_select != "0":
 
         drinks = []
 
-        functions.drinks_menu("Drinks ", drinks, connection)
+        drinks_menu("Drinks ", drinks, connection)
 
-        menu_select = functions.main_menu()
+        menu_select = main_menu()
 
     # ------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
@@ -39,34 +38,34 @@ while menu_select != "0":
 
         couriers = []
 
-        functions.courier_menu("Courier ", couriers, connection)
+        courier_menu("Courier ", couriers, connection)
 
-        menu_select = functions.main_menu()
+        menu_select = main_menu()
 
     # ------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
 
-    elif menu_select == 3:
+    # elif menu_select == 3:
 
-        orders = []
+    #     orders = []
 
-        functions.read_from_csv("data/order_info.csv", orders)
+    #     functions.read_from_csv("data/order_info.csv", orders)
 
-        functions.order_menu("Order", orders)
+    #     functions.order_menu("Order", orders)
 
-        fieldnames = [
-            "Id",
-            "Name",
-            "Address",
-            "Phone",
-            "Courier",
-            "Products",
-            "Status",
-        ]
+    #     fieldnames = [
+    #         "Id",
+    #         "Name",
+    #         "Address",
+    #         "Phone",
+    #         "Courier",
+    #         "Products",
+    #         "Status",
+    #     ]
 
-        functions.write_to_csv("data/order_info.csv", orders, fieldnames)
+    #     functions.write_to_csv("data/order_info.csv", orders, fieldnames)
 
-        menu_select = functions.main_menu()
+    #     menu_select = main_functions.main_menu()
     # ------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
 
@@ -75,6 +74,6 @@ while menu_select != "0":
         break
 
 
-functions.rate_sys()
+rate_sys()
 
 connection.close()

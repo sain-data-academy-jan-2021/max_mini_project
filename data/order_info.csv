@@ -1,4 +1,4 @@
-Index,Name,Address,Phone,Courier,Products,Status
+Id,Name,Address,Phone,Courier,Products,Status
 1,Max,61 Bouveire Road West,07846929461,2,4,Pending.
 2,Jack,2 Sunnyside Road,01303210173,1,8,Pending.
 3,Sam,7 Martello Drive,01303859201,5,1,Pending.

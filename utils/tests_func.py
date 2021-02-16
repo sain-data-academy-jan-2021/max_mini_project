@@ -1,6 +1,5 @@
-from functions import main_menu, read_from_csv, write_to_csv
-import unittest
-
+from utils import main_functions
+from unittest.mock import Mock, patch
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
 
@@ -22,7 +21,7 @@ def test_main_menu():
 
 test_main_menu()
 
-# ------------------------------------------------------------------------------------------------------------
+# # ------------------------------------------------------------------------------------------------------------
 
 def test_read_from_csv():
 
@@ -42,7 +41,7 @@ def test_read_from_csv():
 
 test_read_from_csv()
 
-# ------------------------------------------------------------------------------------------------------------
+# # ------------------------------------------------------------------------------------------------------------
 
 def test_write_to_csv():
 
@@ -66,11 +65,11 @@ def test_write_to_csv():
 
 test_write_to_csv()
 
-#------------------------------------------------------------------------------------------------------------
-#------------------------------------------------------------------------------------------------------------
-#                                          UNHAPPY PATH.          
-#------------------------------------------------------------------------------------------------------------
-#------------------------------------------------------------------------------------------------------------
+# #------------------------------------------------------------------------------------------------------------
+# #------------------------------------------------------------------------------------------------------------
+# #                                          UNHAPPY PATH.          
+# #------------------------------------------------------------------------------------------------------------
+# #------------------------------------------------------------------------------------------------------------
 
 
 def test_main_menu():
@@ -128,3 +127,37 @@ def test_write_to_csv():
 
 
 test_write_to_csv()
+
+
+
+
+
+
+
+def main_menu():
+
+    try:
+        selection = int(
+            input(
+                """1.) Product Menu    \n2.) Courier List    \n3.) Order Screen    \n0.) Exit. """
+            )
+        )
+        if selection not in acceptable_values:
+            print("Invalid number. Please try again. ")
+        return selection
+    except ValueError as err:
+         print(err)
+
+
+
+
+@patch("builtins.print")
+@patch("builtins.input")
+def test_mock_main_menu(mock_input, mock_print):
+
+    mock_input.return_value = "4"
+    main_menu()
+    mock_print.assert_called_with("Invalid number. Please try again. ")
+    print("Works.")
+
+test_mock_main_menu()

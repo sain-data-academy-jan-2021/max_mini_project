@@ -3,8 +3,10 @@ import os
 os.system("clear")
 import utils.functions as functions
 import login
-import csv
-from utils.functions import header
+from utils.main_functions import *
+from utils.DB_funcs import *
+
+connection = db_connect()
 
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
@@ -26,19 +28,7 @@ while menu_select != "0":
 
         drinks = []
 
-        functions.read_from_csv("data/drinks_list.csv", drinks)
-
-        functions.drinks_menu("Drinks ", drinks)
-
-        fieldnames = [
-            "Index",
-            "Drink",
-            "Type",
-            "Price",
-            "Status",
-        ]
-
-        functions.write_to_csv("data/drinks_list.csv", drinks, fieldnames)
+        functions.drinks_menu("Drinks ", drinks, connection)
 
         menu_select = functions.main_menu()
 
@@ -49,19 +39,7 @@ while menu_select != "0":
 
         couriers = []
 
-        functions.read_from_csv("data/courier_list.csv", couriers)
-
-        functions.courier_menu("Courier ", couriers)
-
-        fieldnames = [
-            "Index",
-            "Name",
-            "Age",
-            "Vehicle",
-            "Status",
-        ]
-
-        functions.write_to_csv("data/courier_list.csv", couriers, fieldnames)
+        functions.courier_menu("Courier ", couriers, connection)
 
         menu_select = functions.main_menu()
 
@@ -77,7 +55,7 @@ while menu_select != "0":
         functions.order_menu("Order", orders)
 
         fieldnames = [
-            "Index",
+            "Id",
             "Name",
             "Address",
             "Phone",
@@ -96,4 +74,7 @@ while menu_select != "0":
         print("Thankyou!")
         break
 
+
 functions.rate_sys()
+
+connection.close()

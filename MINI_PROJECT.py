@@ -3,7 +3,7 @@ import os
 os.system("clear")
 import login
 from utils.main_functions import *
-from utils.DB_funcs import * 
+from utils.DB_funcs import *
 
 connection = db_connect()
 
@@ -45,27 +45,6 @@ while menu_select != "0":
     # ------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
 
-    # elif menu_select == 3:
-
-    #     orders = []
-
-    #     functions.read_from_csv("data/order_info.csv", orders)
-
-    #     functions.order_menu("Order", orders)
-
-    #     fieldnames = [
-    #         "Id",
-    #         "Name",
-    #         "Address",
-    #         "Phone",
-    #         "Courier",
-    #         "Products",
-    #         "Status",
-    #     ]
-
-    #     functions.write_to_csv("data/order_info.csv", orders, fieldnames)
-
-    #     menu_select = main_functions.main_menu()
     # ------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
 

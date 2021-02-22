@@ -5,7 +5,7 @@ import numpy as np
 os.system("clear")
 import login
 from utils.main_functions import *
-from utils.DB_funcs import * 
+from utils.DB_funcs import *
 
 connection = db_connect()
 
@@ -44,17 +44,6 @@ while menu_select != "0":
 
         menu_select = main_menu()
 
-    # ------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------
-
-    elif menu_select == 3:
-
-        orders = []
-
-        order_menu("Orders ", orders, connection)
-
-        menu_select = main_menu()
-        
     # ------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------
 

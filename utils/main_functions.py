@@ -6,6 +6,7 @@ import pymysql
 from dotenv import load_dotenv
 from utils.drinks_funcs import *
 from utils.couriers_funcs import *
+from utils.orders_funcs import *
 
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
@@ -155,34 +156,26 @@ def courier_menu(item, list, connection):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def print_table_order(item_list):
+def print_table_orders(connection):
+    data_list = import_ord_db(connection)
     x = PrettyTable()
-    x.field_names = [
-        "Id",
-        "Name",
-        "Address",
-        "Phone",
-        "Courier",
-        "Prodcut(s)",
-        "Status",
-    ]
-    for items in item_list:
+    x.field_names = ["Id", "Name", "Address", "Phone Number", "Courier", "Status"]
+    for items in data_list:
         x.add_row(
             (
-                items["Id"],
-                items["Name"],
-                items["Address"],
-                items["Phone"],
-                items["Courier"],
-                items["Products"],
-                items["Status"],
+                items[0],
+                items[1],
+                items[2],
+                items[3],
+                items[4],
+                items[5],
             )
         )
     print(x)
 
 
-def order_menu(item, list):
-    print_table_order(list)
+def order_menu(item, list, connection):
+    print_table_orders(connection)
 
     order_option = input(
         f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}    \n0.) Exit "
@@ -191,56 +184,28 @@ def order_menu(item, list):
     while order_option != "0":
         if order_option == "1":
             header()
-            print_table_order(list)
+            print_table_orders(connection)
         elif order_option == "2":
             header()
-            idx = input("Id: ")
-            name = input("Name: ")
-            add = input("Address: ")
-            p_num = input("Phone Number: ")
-            prod = input("Id of Product: ")
-            cour = input("Id of Courier: ")
-            stat = input("Current Status: ")
-
-            order_dict = {
-                "Id": idx,
-                "Name": name,
-                "Address": add,
-                "Phone": p_num,
-                "Courier": cour,
-                "Products": prod,
-                "Status": stat,
-            }
-
-            list.append(order_dict)
-            print_table_order(list)
+            cursor = connection.cursor()
+            ord_add(connection)
+            cursor.close()
+            connection.commit()
+            print_table_orders(connection)
         elif order_option == "3":
             header()
-            update_ord = input(
-                "What is the Id of the order you would like to update?: "
-            )
-            new_status = input("New Status of order: ")
-            current_order = False
-            for order in list:
-                if order["Id"] == update_ord:
-                    order["Current_Status"] = new_status
-                    print_table_order(list)
-                    current_order = True
-            if current_order == False:
-                print("Sorry! Not a current order.")
-
-                return order
+            cursor = connection.cursor()
+            ord_update(connection)
+            cursor.close()
+            connection.commit()
+            print_table_orders(connection)
         elif order_option == "4":
             header()
-            del_ord = input("What is the Id of the order you would like to delete?: ")
-            current_order = False
-            for order in list:
-                if order["Id"] == del_ord:
-                    list.remove(order)
-                    print_table_order(list)
-                    current_order = True
-            if current_order == False:
-                print("Sorry! Not a current order.")
+            cursor = connection.cursor()
+            ord_delete(connection)
+            cursor.close()
+            connection.commit()
+            print_table_orders(connection)
 
         order_option = input(
             f"1.) Print {item}  \n2.) Add A {item}    \n3.) Update A {item}  \n4.) Delete A {item}   \n0.) Exit "
@@ -251,7 +216,7 @@ def order_menu(item, list):
 # ------------------------------------------------------------------------------------------------------------
 
 
-def rate_sys():
+def rate_sys(connection):
     rate = input(
         "Thankyou for your order. Would you mind leaving a review for us today? "
     )
@@ -261,9 +226,14 @@ def rate_sys():
     rate_stars = [1, 2, 3, 4, 5]
 
     if rate in rate_y:
-        rate_stars_y = int(
-            input("Thankyou! How many stars out of 5 would you give our service? ")
+        cursor = connection.cursor()
+        rate_name = input("Thankyou! What is your username?: ")
+        rate = int(input("And how many stars out of 5 would you give our service? "))       
+        cursor.execute(
+            f'INSERT INTO ratings (username, rating) VALUES ("{rate_name}", {rate})'
         )
+        connection.commit()
+        cursor.close()
         print("Thanks, we'll take that onboard. Until next time!")
     elif rate in rate_n:
         print("Ok no problem. Until next time!")

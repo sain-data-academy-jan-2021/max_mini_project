@@ -1,5 +1,3 @@
-
-
 def cour_update(connection):
 
     cursor = connection.cursor()
@@ -14,8 +12,9 @@ def cour_update(connection):
 
     cursor.execute(
         f'UPDATE couriers status SET status = "{new_stat}" WHERE name = "{update_cour}"'
-        )
+    )
     cursor.close()
+
 
 def cour_delete(connection):
 
@@ -29,6 +28,7 @@ def cour_delete(connection):
 
     cursor.execute(f'DELETE FROM couriers WHERE name = "{del_cour}"')
     cursor.close()
+
 
 def cour_add(connection):
 

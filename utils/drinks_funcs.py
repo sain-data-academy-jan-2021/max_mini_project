@@ -1,4 +1,3 @@
-
 def drinks_add(connection):
 
     cursor = connection.cursor()
@@ -12,6 +11,7 @@ def drinks_add(connection):
     )
     cursor.close()
 
+
 def drinks_update(connection):
 
     cursor = connection.cursor()
@@ -21,7 +21,7 @@ def drinks_update(connection):
         update_prod = input("Name of product you would like to update?: ")
         new_price = float(input("New Price: "))
         cursor.execute(f'SELECT * from products WHERE drink = "{update_prod}"')
-        valid_drink = check_name_in_db(cursor)
+        valid_drink = check_id_in_db(cursor)
     cursor.execute(
         f'UPDATE products price SET price = "{new_price}" WHERE drink = "{update_prod}"'
     )

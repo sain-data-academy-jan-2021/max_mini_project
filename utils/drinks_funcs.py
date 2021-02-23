@@ -1,3 +1,6 @@
+from utils.DB_funcs import *
+
+
 def drinks_add(connection):
 
     cursor = connection.cursor()
@@ -18,9 +21,9 @@ def drinks_update(connection):
     valid_drink = False
 
     while not valid_drink:
-        update_prod = input("Name of product you would like to update?: ")
+        update_prod = input("ID of product you would like to update?: ")
         new_price = float(input("New Price: "))
-        cursor.execute(f'SELECT * from products WHERE drink = "{update_prod}"')
+        cursor.execute(f'SELECT * from products WHERE product_id = "{update_prod}"')
         valid_drink = check_id_in_db(cursor)
     cursor.execute(
         f'UPDATE products price SET price = "{new_price}" WHERE drink = "{update_prod}"'
@@ -36,7 +39,7 @@ def drinks_delete(connection):
     while not valid_drink:
         del_prod = input("Name of product you would like to delete: ")
         cursor.execute(f'SELECT * from products WHERE drink = "{del_prod}"')
-        valid_drink = check_name_in_db(cursor)
+        valid_drink = check_id_in_db(cursor)
 
     cursor.execute(f'DELETE FROM products WHERE drink = "{del_prod}"')
     cursor.close()

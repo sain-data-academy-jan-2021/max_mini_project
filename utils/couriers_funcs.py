@@ -1,3 +1,5 @@
+from utils.DB_funcs import *
+
 def cour_update(connection):
 
     cursor = connection.cursor()
@@ -8,7 +10,7 @@ def cour_update(connection):
         update_cour = input("Name of courier you would like to update?: ")
         new_stat = input("New Status: ")
         cursor.execute(f'SELECT * from couriers WHERE name = "{update_cour}"')
-        valid_courier = check_name_in_db(cursor)
+        valid_courier = check_id_in_db(cursor)
 
     cursor.execute(
         f'UPDATE couriers status SET status = "{new_stat}" WHERE name = "{update_cour}"'
@@ -24,7 +26,7 @@ def cour_delete(connection):
     while not valid_courier:
         del_cour = input("Name of courier you would like to delete: ")
         cursor.execute(f'SELECT * from couriers WHERE name = "{del_cour}"')
-        valid_courier = check_name_in_db(cursor)
+        valid_courier = check_id_in_db(cursor)
 
     cursor.execute(f'DELETE FROM couriers WHERE name = "{del_cour}"')
     cursor.close()

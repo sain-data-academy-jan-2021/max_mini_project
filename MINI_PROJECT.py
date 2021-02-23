@@ -2,6 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
+
 os.system("clear")
 import login
 from utils.main_functions import *
@@ -29,7 +30,7 @@ while menu_select != "0":
 
         drinks = []
 
-        drinks_menu("Drinks ", drinks, connection)
+        drinks_menu("Drink ", drinks, connection)
 
         menu_select = main_menu()
 
@@ -41,6 +42,17 @@ while menu_select != "0":
         couriers = []
 
         courier_menu("Courier ", couriers, connection)
+
+        menu_select = main_menu()
+
+    # ------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------
+
+    elif menu_select == 3:
+
+        orders = []
+
+        order_menu("Order ", orders, connection)
 
         menu_select = main_menu()
 

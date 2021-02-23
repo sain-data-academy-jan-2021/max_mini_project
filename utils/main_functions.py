@@ -228,7 +228,7 @@ def rate_sys(connection):
     if rate in rate_y:
         cursor = connection.cursor()
         rate_name = input("Thankyou! What is your username?: ")
-        rate = int(input("And how many stars out of 5 would you give our service? "))       
+        rate = int(input("And how many stars out of 5 would you give our service? "))
         cursor.execute(
             f'INSERT INTO ratings (username, rating) VALUES ("{rate_name}", {rate})'
         )

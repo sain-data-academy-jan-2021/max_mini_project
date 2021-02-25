@@ -1,12 +1,13 @@
 import csv
 from prettytable import PrettyTable
 import os
-from utils.DB_funcs import *
+from DB_funcs import *
 import pymysql
 from dotenv import load_dotenv
-from utils.drinks_funcs import *
-from utils.couriers_funcs import *
-from utils.orders_funcs import *
+from drinks_funcs import *
+from couriers_funcs import *
+from orders_funcs import *
+from rating_funcs import *
 
 menu_select = ""
 acceptable_values = [0, 1, 2, 3]
@@ -214,29 +215,3 @@ def order_menu(item, list, connection):
 
 # ------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------
-
-
-def rate_sys(connection):
-    rate = input(
-        "Thankyou for your order. Would you mind leaving a review for us today? "
-    )
-
-    rate_y = ["Yes", "yes", "y", "Y"]
-    rate_n = ["No", "no", "n", "N"]
-    rate_stars = [1, 2, 3, 4, 5]
-
-    if rate in rate_y:
-        cursor = connection.cursor()
-        rate_name = input("Thankyou! What is your username?: ")
-        rate = int(input("And how many stars out of 5 would you give our service? "))
-        cursor.execute(
-            f'INSERT INTO ratings (username, rating) VALUES ("{rate_name}", {rate})'
-        )
-        connection.commit()
-        cursor.close()
-        print("Thanks, we'll take that onboard. Until next time!")
-    elif rate in rate_n:
-        print("Ok no problem. Until next time!")
-    else:
-        print("Sorry, invalid selection. Please try again.")
-    return rate

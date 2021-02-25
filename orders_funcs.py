@@ -1,5 +1,5 @@
-from utils.DB_funcs import *
-from utils.main_functions import *
+from DB_funcs import *
+from main_functions import *
 
 
 def print_table_drinks(connection):
@@ -41,15 +41,13 @@ def print_table_summary(connection, order_id):
 
 def ord_add(connection):
 
-    cursor = connection.cursor()
-
     name = input("Customer Name: ")
     add = input("Customer Address: ")
     pnum = input("Phone: ")
     cour = input("Courier: ")
     status = "Pending."
     prods = choose_prods_for_ord(connection)
-    cursor.execute(
+    db_do(connection,
         f'INSERT INTO orders (name, address, phone, courier, status) VALUES ("{name}", "{add}", "{pnum}", {cour}, "{status}")'
     )
     order_id = execute_sql_select(connection, "select MAX(order_id) from orders")[0][0]

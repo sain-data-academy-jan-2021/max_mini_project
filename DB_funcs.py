@@ -13,11 +13,13 @@ def db_connect():
 
     return pymysql.connect(host, user, password, database)
 
+
 def execute_sql_select(connection, statement):
     cursor = connection.cursor()
     cursor.execute(statement)
     cursor.close()
     return cursor.fetchall()
+
 
 def db_do(connection, statement):
     cursor = connection.cursor()
@@ -81,18 +83,18 @@ def import_ord_db(connection):
 #     A simple function which will read all orders in my order table, turn each order into a list,
 #     then add each order to another list
 #     '''
-    
+
 #     rows = %sql select * from Orders #reads in all data in the table
 #     list_of_orders = [] #creates a blank list to write too, will hold every order list
-    
+
 #     for order in rows : #loop over every row returned by the sql command in line 7
-        
+
 #         single_order_list = [] #create another blank list that will hold data for an individual order
-        
+
 #         for i in range(0,8) : #loop over a single row. Each row contains 9 bits of data to be pulled out
-            
+
 #             single_order_list.append(order[i]) #Append data for a particual order to it's list
-            
+
 #         list_of_orders.append(single_order_list) #Append order data to list of lists
-            
+
 #     return list_of_orders

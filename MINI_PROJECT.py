@@ -5,8 +5,9 @@ import numpy as np
 
 os.system("clear")
 import login
-from utils.main_functions import *
-from utils.DB_funcs import *
+from main_functions import *
+from DB_funcs import *
+from rating_funcs import *
 
 connection = db_connect()
 

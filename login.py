@@ -23,5 +23,3 @@ def login():
         print ("Wrong username/password")
 
 login()
-
-# make sure you save this!

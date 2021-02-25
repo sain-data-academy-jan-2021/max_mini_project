@@ -1,4 +1,5 @@
-from utils.DB_funcs import *
+from DB_funcs import *
+
 
 def cour_update(connection):
 
@@ -34,12 +35,11 @@ def cour_delete(connection):
 
 def cour_add(connection):
 
-    cursor = connection.cursor()
     name = input("Courier Name: ")
-    age = float(input("Courier Age: "))
+    age = input("Courier Age: ")
     vehic = input("Vehicle: ")
     status = input("Courier Status: ")
-    cursor.execute(
-        f'INSERT INTO couriers (name, age, vehicle, status) VALUES ("{name}", "{age}", "{vehic}", "{status}")'
+    db_do(
+        connection,
+        f'INSERT INTO couriers (name, age, vehicle, status) VALUES ("{name}", "{age}", "{vehic}", "{status}")',
     )
-    cursor.close()

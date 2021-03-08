@@ -6,4 +6,5 @@ python-dotenv==0.15.0
 six==1.15.0
 prettytable==2.0.0
 wcwidth==0.2.5
+matplotlib
 

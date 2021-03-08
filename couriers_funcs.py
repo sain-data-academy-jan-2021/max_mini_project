@@ -1,36 +1,28 @@
 from DB_funcs import *
 
+# COURIER FUNCTIONS.
 
-def cour_update(connection):
-
-    cursor = connection.cursor()
-
-    valid_courier = False
-
-    while not valid_courier:
-        update_cour = input("Name of courier you would like to update?: ")
-        new_stat = input("New Status: ")
-        cursor.execute(f'SELECT * from couriers WHERE name = "{update_cour}"')
-        valid_courier = check_id_in_db(cursor)
-
-    cursor.execute(
-        f'UPDATE couriers status SET status = "{new_stat}" WHERE name = "{update_cour}"'
-    )
-    cursor.close()
+# ----------------------------------------------------------------------------------------------
 
 
 def cour_delete(connection):
 
-    cursor = connection.cursor()
     valid_courier = False
 
     while not valid_courier:
         del_cour = input("Name of courier you would like to delete: ")
-        cursor.execute(f'SELECT * from couriers WHERE name = "{del_cour}"')
-        valid_courier = check_id_in_db(cursor)
+        courier_list = execute_sql_select(
+            connection, f'SELECT * from couriers WHERE name = "{del_cour}"'
+        )
+        if len(courier_list) != 0:
+            db_do(connection, f'DELETE FROM couriers WHERE name = "{del_cour}"')
+            break
+        else:
+            print("Invalid Selection. Try Again. ")
+            continue
 
-    cursor.execute(f'DELETE FROM couriers WHERE name = "{del_cour}"')
-    cursor.close()
+
+# ----------------------------------------------------------------------------------------------
 
 
 def cour_add(connection):
@@ -43,3 +35,27 @@ def cour_add(connection):
         connection,
         f'INSERT INTO couriers (name, age, vehicle, status) VALUES ("{name}", "{age}", "{vehic}", "{status}")',
     )
+
+
+# ----------------------------------------------------------------------------------------------
+
+
+def cour_update(connection):
+
+    valid_courier = False
+
+    while not valid_courier:
+        update_cour = input("Name of courier you would like to update?: ")
+        new_stat = input("New Status: ")
+        courier_list = execute_sql_select(
+            connection, f'SELECT * from couriers WHERE name = "{update_cour}"'
+        )
+        if len(courier_list) != 0:
+            db_do(
+                connection,
+                f'UPDATE couriers status SET status = "{new_stat}" WHERE name = "{update_cour}"',
+            )
+            break
+        else:
+            print("Invalid Selection. Please Try Again.")
+            continue

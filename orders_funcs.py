@@ -1,22 +1,104 @@
 from DB_funcs import *
 from main_functions import *
 
+# ORDER MENU FUNCTIONS.
 
-def print_table_drinks(connection):
-    data_list = import_prod_db(connection)
-    x = PrettyTable()
-    x.field_names = ["Id", "Drink", "Type", "Price", "Status"]
-    for items in data_list:
-        x.add_row(
-            (
-                items[0],
-                items[1],
-                items[2],
-                items[3],
-                items[4],
-            )
+# ----------------------------------------------------------------------------------------------
+
+
+def ord_add(connection):
+
+    name = input("Customer Name: ")
+    add = input("Customer Address: ")
+    pnum = input("Phone: ")
+    cour = input("Courier: ")
+    status = "Pending."
+    prods = choose_prods_for_ord(connection)
+    db_do(
+        connection,
+        f'INSERT INTO orders (name, address, phone, courier, status) VALUES ("{name}", "{add}", "{pnum}", {cour}, "{status}")',
+    )
+    order_id = execute_sql_select(connection, "select MAX(order_id) from orders")[0][0]
+    for prod in prods:
+        db_do(
+            connection,
+            f"insert into orders_products (order_id, product_id) values ('{order_id}', '{prod}')",
         )
-    print(x)
+
+    print_table_summary(connection, order_id)
+
+
+# ----------------------------------------------------------------------------------------------
+
+
+def ord_update(connection):
+
+    valid_order = False
+
+    while not valid_order:
+        update_ord = input("ID of the order that you would like to update?: ")
+        new_stat = input("New Status: ")
+        orders_list = execute_sql_select(
+            connection, f'SELECT * from orders WHERE order_id = "{update_ord}"'
+        )
+        if len(orders_list) != 0:
+            db_do(
+                connection,
+                f'UPDATE orders status SET status = "{new_stat}" WHERE order_id = "{update_ord}"',
+            )
+            break
+        else:
+            print("Invalid Selection. Please Try Again.")
+            continue
+
+
+# ----------------------------------------------------------------------------------------------
+
+
+def ord_delete(connection):
+
+    valid_order = False
+
+    while not valid_order:
+        del_ord = input("ID of the order that you would like to delete: ")
+        order_list = execute_sql_select(
+            connection, f'SELECT * from orders WHERE order_id = "{del_ord}"'
+        )
+        if len(order_list) != 0:
+            db_do(
+                connection, f'DELETE FROM orders_products WHERE order_id = "{del_ord}"'
+            )
+            db_do(connection, f'DELETE FROM orders WHERE order_id = "{del_ord}"')
+            break
+        else:
+            print("Invalid Selection. Please Try Again. ")
+            continue
+
+
+# ----------------------------------------------------------------------------------------------
+
+
+def choose_prods_for_ord(connection):
+    ids = [
+        id[0]
+        for id in execute_sql_select(connection, "SELECT product_id from products")
+    ]
+    products_ids = []
+    print_table_drinks(connection)
+    while True:
+        id = input(
+            "Please select a ID from the table. Select as many as you like. When done, enter 0."
+        )
+        if int(id) == 0:
+            break
+        elif int(id) not in ids:
+            print("Invalid Selection. Please Try Again.")
+            continue
+        products_ids.append(id)
+    return products_ids
+
+
+# ----------------------------------------------------------------------------------------------
 
 
 def print_table_summary(connection, order_id):
@@ -39,29 +121,7 @@ def print_table_summary(connection, order_id):
     print(x)
 
 
-def ord_add(connection):
-
-    name = input("Customer Name: ")
-    add = input("Customer Address: ")
-    pnum = input("Phone: ")
-    cour = input("Courier: ")
-    status = "Pending."
-    prods = choose_prods_for_ord(connection)
-    db_do(connection,
-        f'INSERT INTO orders (name, address, phone, courier, status) VALUES ("{name}", "{add}", "{pnum}", {cour}, "{status}")'
-    )
-    order_id = execute_sql_select(connection, "select MAX(order_id) from orders")[0][0]
-    for prod in prods:
-        db_do(
-            connection,
-            f"insert into orders_products (order_id, product_id) values ('{order_id}', '{prod}')",
-        )
-    print_table_summary(connection, order_id)
-
-
 def print_order_summary(connection, order_id):
-
-    cursor = connection.cursor()
 
     summary = execute_sql_select(
         connection,
@@ -70,54 +130,18 @@ def print_order_summary(connection, order_id):
     return summary
 
 
-def ord_update(connection):
-
-    cursor = connection.cursor()
-
-    valid_order = False
-
-    while not valid_order:
-        update_ord = input("ID of the order that you would like to update?: ")
-        new_stat = input("New Status: ")
-        cursor.execute(f'SELECT * from orders WHERE order_id = "{update_ord}"')
-        valid_order = check_id_in_db(cursor)
-
-    cursor.execute(
-        f'UPDATE orders status SET status = "{new_stat}" WHERE order_id = "{update_ord}"'
-    )
-    cursor.close()
-
-
-def ord_delete(connection):
-
-    cursor = connection.cursor()
-    valid_order = False
-
-    while not valid_order:
-        del_ord = input("ID of the order that you would like to delete: ")
-        cursor.execute(f'SELECT * from orders WHERE order_id = "{del_ord}"')
-        valid_order = check_id_in_db(cursor)
-
-    cursor.execute(f'DELETE FROM orders_products WHERE order_id = "{del_ord}"')
-    cursor.execute(f'DELETE FROM orders WHERE order_id = "{del_ord}"')
-    cursor.close()
-
-
-def choose_prods_for_ord(connection):
-    ids = [
-        id[0]
-        for id in execute_sql_select(connection, "SELECT product_id from products")
-    ]
-    products_ids = []
-    print_table_drinks(connection)
-    while True:
-        id = input(
-            "Please select a ID from the table. Select as many as you like. When done, eneter 0."
+def print_table_drinks(connection):
+    data_list = import_prod_db(connection)
+    x = PrettyTable()
+    x.field_names = ["Id", "Drink", "Type", "Price", "Status"]
+    for items in data_list:
+        x.add_row(
+            (
+                items[0],
+                items[1],
+                items[2],
+                items[3],
+                items[4],
+            )
         )
-        if int(id) == 0:
-            break
-        elif int(id) not in ids:
-            print("Invalid Selection.")
-            continue
-        products_ids.append(id)
-    return products_ids
+    print(x)

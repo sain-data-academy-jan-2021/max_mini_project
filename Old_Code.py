@@ -64,10 +64,6 @@ while menu_select != "0":
         menu_select = functions.main_menu()
 
 
-
-
-
-
 def item_menu(item, list):
     print(list)
     choose_option = input(
@@ -113,3 +109,6 @@ def write_to_csv(filename, list, fieldnames):
         writer.writeheader()
         for row in list:
             writer.writerow(row)
+
+
+# HELLO
